@@ -1,0 +1,28 @@
+syntax = "proto3";
+package analyzer;
+option csharp_namespace = "AiTalentGenome.Contracts.Analyzer";
+
+service AnalyzerService {
+  rpc AnalyzeCandidate (AnalyzeRequest) returns (AnalyzeResponse);
+}
+
+// Выделяем вакансию в отдельное сообщение, повторяющее структуру доменной модели
+message VacancyContext {
+  string title = 1;
+  string description = 2;
+  repeated string key_skills = 3;
+  string experience = 4;
+}
+
+message AnalyzeRequest {
+  VacancyContext vacancy = 1;      // Вместо одной строки передаем структурированную вакансию
+  string resume_text = 2;
+  string cover_letter = 3;
+  string user_criteria = 4;
+}
+
+message AnalyzeResponse {
+  double ai_score = 1;              
+  string ai_analysis_json = 2;     
+  repeated string extracted_skills = 3; 
+}

@@ -1,0 +1,19 @@
+[project]
+name = "aitalentgenome-aianalyzerservice"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "grpcio>=1.80.0",
+    "grpcio-tools>=1.80.0",
+    "ollama>=0.6.2",
+]
+
+# Используем нативную секцию инструментов uv
+[tool.uv]
+managed = true
+
+# Объявляем скрипты в стандартной секции автоматизации PEP 621
+[project.scripts]
+compile-proto = "grpc_tools.protoc:main"
