@@ -1,19 +1,18 @@
 import json
 import asyncio
 from typing import Dict, Any, List, Tuple
-# ИСПРАВЛЕНИЕ: Используем обычный синхронный Client вместо AsyncClient
 from ollama import Client  
 from services.summary_orchestrator import SummaryOrchestrator
+from services.psychology_orchestrator import PsychologyOrchestrator # 1. ПОДКЛЮЧАЕМ ИМПОРТ
 from services.base_analyzer import BaseAnalyzer
 
 class MainAnalysisOrchestrator:
     def __init__(self, model_name: str = "llama3:latest"):
         self.model_name = model_name
-        # ИСПРАВЛЕНИЕ: Инициализируем синхронный клиент
         self.ollama_client = Client()
         self.summary_orch = SummaryOrchestrator(self)
+        self.psychology_orch = PsychologyOrchestrator(self) # 2. ИНИЦИАЛИЗИРУЕМ ОРКЕСТРАТОР В КЛАССЕ
 
-    # ИСПРАВЛЕНИЕ: Выносим генерацию в отдельный статический метод для asyncio.to_thread
     @staticmethod
     def _call_ollama(client: Client, model: str, system: str, prompt: str) -> Any:
         return client.generate(
@@ -52,7 +51,6 @@ class MainAnalysisOrchestrator:
         try:
             print(f"[Ollama] Running sub-block analysis: '{analyzer.__class__.__name__}'...")
             
-            # ИСПРАВЛЕНИЕ ПРОБЛЕМЫ 1: Выполняем синхронный вызов в безопасном контексте потока
             response = await asyncio.to_thread(
                 self._call_ollama,
                 self.ollama_client,
@@ -63,7 +61,6 @@ class MainAnalysisOrchestrator:
             
             raw_text = response.get("response", "{}").strip()
             
-            # ИСПРАВЛЕНИЕ ПРОБЛЕМЫ 2: Безопасный парсинг с очисткой от Markdown markdown-оберток
             if raw_text.startswith("```json"):
                 raw_text = raw_text[7:]
             if raw_text.endswith("```"):
@@ -74,7 +71,6 @@ class MainAnalysisOrchestrator:
             
         except json.JSONDecodeError as json_err:
             print(f"\n[JSON DECODE ERROR] Failed to parse JSON in block {analyzer.__class__.__name__}: {json_err}")
-            # Возвращаем пустую структуру, чтобы оркестратор не падал целиком
             return {}
         except Exception as e:
             print(f"\n[CRITICAL OLLAMA ERROR] Failed in block {analyzer.__class__.__name__}:")
@@ -83,8 +79,11 @@ class MainAnalysisOrchestrator:
             return {}
 
     async def run_full_analysis(self, vacancy: Any, resume: str, cover_letter: str, user_criteria: str) -> Tuple[float, str, List[str]]:
-        # Запускаем конвейер Общей сводки
+        # 1. Запускаем конвейер Общей сводки (Вкладка 1)
         summary_data = await self.summary_orch.generate_summary(vacancy, resume, cover_letter, user_criteria)
+        
+        # 3. ЗАПУСКАЕМ КОНВЕЙЕР ПСИХОЛОГИЧЕСКОГО ПОРТРЕТА (Вкладка 2)
+        psychology_data = await self.psychology_orch.generate_portrait(vacancy, resume, cover_letter, user_criteria)
         
         # Извлекаем оценки безопасности и технического мэтча
         compliance = summary_data.get("compliance_analysis", {})
@@ -96,9 +95,10 @@ class MainAnalysisOrchestrator:
         # Рассчитываем итоговый сбалансированный скоринг
         final_ai_score = round((tech_score * 0.7) + (culture_score * 0.3), 2)
         
+        # 4. СКЛЕИВАЕМ РЕЗУЛЬТАТЫ ОБЕИХ ВКЛАДОК В ЕДИНУЮ СТРУКТУРУ
         combined_analysis = {
             "general_summary": summary_data,
-            "psychological_portrait": {} 
+            "psychological_portrait": psychology_data # Передаем сгенерированные блоки вместо {}
         }
         
         # Вытягиваем ключевые компетенции
