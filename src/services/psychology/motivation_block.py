@@ -11,26 +11,30 @@ class MotivationBlockAnalyzer(BaseAnalyzer):
     def system_prompt(self) -> str:
         return (
             "You are an expert HR Psychologist, Behavioral Interviewer, and Talent Assessor.\n"
-            "Your task is to analyze the candidate's motivation matrix and professional self-esteem based on their resume and interview text.\n\n"
-            "CRITICAL RULES:\n"
-            "1. You must output ONLY a valid JSON object matching the JSON SCHEMA below.\n"
-            "2. All text values, bullet points, and descriptions must be strictly in RUSSIAN.\n"
-            "3. Do not limit the number of bullet points; generate as many as objectively needed based on the context.\n"
-            "4. Be precise in evaluating self-esteem (e.g., adequate, overinflated, defensive) and core motivational drivers.\n\n"
+            "Your task is to analyze the candidate's motivation matrix and professional self-esteem based on the provided resume and interview text.\n\n"
+            "CRITICAL INPUT LAWS:\n"
+            "1. Analyze ONLY the factual text provided in the user prompt. Do not assume, guess, or extrapolate facts.\n"
+            "2. If the text does not contain indicators for a specific key, return an empty array [] for that key. Do not invent details.\n"
+            "3. NEVER reuse phrases, placeholder words, or examples listed in this system prompt in your JSON output.\n\n"
+            "CRITICAL FORMATTING RULES:\n"
+            "1. You must output ONLY a raw, valid JSON object matching the JSON SCHEMA below.\n"
+            "2. Do not wrap the response in markdown blocks like triple backticks JSON. Output pure JSON.\n"
+            "3. All values in arrays must be written strictly in RUSSIAN.\n"
+            "4. Do not limit the number of items in arrays; generate as many analytical bullet points as objectively needed.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
             '  "interview_manifestation": [\n'
-            '    "Как проявляется в интервью (например: Чётко обозначил зарплатные ожидания – ориентирован на достойный уровень оплаты)",\n'
-            '    "Мотивационный маркер (например: Мотивация построена на дисциплине, порядке, организации процессов)"\n'
+            '    "<анализ_высказываний_кандидата_в_интервью_отражающих_его_материальную_и_нематериальную_мотивацию>",\n'
+            '    "<поведенческие_маркеры_в_речи_отражающие_уровень_самооценки_амбиций_и_уверенности_в_себе>"\n'
             '  ],\n'
             '  "resume_manifestation": [\n'
-            '    "Как проявляется в резюме (например: Нет частых смен работы, всегда занимал ответственные позиции)",\n'
-            '    "Индикатор самооценки (например: Самооценка уверенная, но без перегибов – чётко знает свою ценность)"\n'
+            '    "<анализ_карьерной_траектории_длительности_работы_на_позициях_и_склонности_к_стабильности>",\n'
+            '    "<маркеры_самооценки_через_текст_резюме_фокус_на_личных_достижениях_или_на_сухих_обязанностях>"\n'
             '  ],\n'
             '  "conclusion_points": [\n'
-            '    "Вывод по мотивации (например: Мотивация основана на стабильности, чёткости процессов)",\n'
-            '    "Вывод по самооценке (например: Самооценка адекватная – понимает свою ценность)",\n'
-            '    "Условия вовлеченности (например: Заинтересован в работе, если сможет реально влиять на процессы)"\n'
+            '    "<концентрированный_вывод_о_ведущих_мотивационных_драйверах_кандидата>",\n'
+            '    "<итоговое_заключение_об_уровне_профессиональной_самооценки_адекватная_завышенная_заниженная>",\n'
+            '    "<ключевые_условия_при_которых_кандидат_будет_максимально_вовлечен_в_рабочие_процессы>"\n'
             '  ]\n'
             "}"
         )

@@ -12,21 +12,26 @@ class ManagementStyleBlockAnalyzer(BaseAnalyzer):
         return (
             "You are an expert Executive Assessment and Leadership Recruiter.\n"
             "Your task is to analyze the candidate's management style and soft skills based on their experience and interview data.\n\n"
-            "CRITICAL RULES:\n"
-            "1. You must output ONLY a valid JSON object matching the JSON SCHEMA below.\n"
-            "2. All text values, bullets, and descriptions must be strictly in RUSSIAN.\n"
-            "3. Be objective and direct. Highlight boundaries of their skills (e.g., if they are structured but not flexible, state it clearly).\n\n"
+            "CRITICAL INPUT LAWS:\n"
+            "1. Analyze ONLY the factual text provided in the user prompt. Do not assume, guess, or extrapolate facts.\n"
+            "2. If the text does not contain indicators for a specific key, return an empty array [] for that key. Do not invent details.\n"
+            "3. NEVER reuse phrases, placeholder words, or examples listed in this system prompt in your JSON output.\n\n"
+            "CRITICAL FORMATTING RULES:\n"
+            "1. You must output ONLY a raw, valid JSON object matching the JSON SCHEMA below.\n"
+            "2. Do not wrap the response in markdown blocks like triple backticks JSON. Output pure JSON.\n"
+            "3. All values must be written strictly in RUSSIAN.\n"
+            "4. Be objective and direct. Highlight boundaries of their skills and constraints clearly based on the data.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
             '  "management_style": [\n'
-            '    "Особенности стиля управления (например: Жесткий, но справедливый – требует дисциплины)",\n'
-            '    "Ориентация в работе (например: Ориентирован на результат, а не на поиск компромиссов)"\n'
+            '    "<особенности_и_характерные_черты_стиля_управления_выявленные_из_опыта_кандидата>",\n'
+            '    "<приоритеты_и_ориентация_в_рабочих_процессах_фокус_на_результате_людях_или_регламентах>"\n'
             '  ],\n'
             '  "soft_skills": [\n'
-            '    "Коммуникация (например: Коммуникация без лишних эмоций, уверенная – говорит по делу)",\n'
-            '    "Гибкость / Обучаемость (например: Четко выражает мысли, но не всегда гибок в общении)"\n'
+            '    "<оценка_качества_и_стиля_коммуникации_кандидата_на_основе_текста_интервью>",\n'
+            '    "<уровень_гибкости_эмпатии_и_адаптивности_в_межличностном_взаимодействии>"\n'
             '  ],\n'
-            '  "conclusion": "Итоговый сжатый вывод (например: Кандидат сильный управленец, требовательный, но не склонен к гибкости)"\n'
+            '  "conclusion": "<итоговый_сжатый_вывод_о_соответствии_управленческих_и_гибких_навыков_кандидата>"\n'
             "}"
         )
 
