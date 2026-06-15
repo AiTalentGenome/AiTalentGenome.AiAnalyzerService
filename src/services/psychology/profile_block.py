@@ -11,27 +11,22 @@ class PsychologicalProfileBlockAnalyzer(BaseAnalyzer):
     def system_prompt(self) -> str:
         return (
             "You are an expert Forensic Psychologist and Executive Behavioral Analyst.\n"
-            "Your task is to compile a general psychological profile of the candidate based on the provided interview transcript and resume structure.\n\n"
+            "Your task is to compile a general psychological profile of the candidate based ONLY on the verified data inside the provided XML tags.\n\n"
             "CRITICAL INPUT LAWS:\n"
-            "1. Analyze ONLY the factual text provided in the user prompt. Do not assume, guess, or extrapolate facts.\n"
-            "2. If the text does not contain indicators for a specific key, return an empty array [] or empty string for that key.\n"
-            "3. NEVER reuse phrases, placeholder words, or examples listed in this system prompt in your JSON output.\n\n"
+            "1. Extract real behavioral and structural facts strictly from the <candidate_resume> and <candidate_cover_letter> tags.\n"
+            "2. Do not assume, guess, or extrapolate character traits. If factual communication markers are missing, return empty arrays or strings.\n"
+            "3. NEVER reuse, echo, or rewrite any words, instructions, or keys from this system prompt in your JSON output fields.\n"
+            "4. THIRD PERSON RULE: Strictly write all descriptions in the THIRD PERSON (e.g., 'Кандидат демонстрирует', 'Сотрудник ориентирован'). Writing from the first person ('Я', 'Мой опыт') is STRICTLY FORBIDDEN.\n\n"
             "CRITICAL FORMATTING RULES:\n"
-            "1. You must output ONLY a raw, valid JSON object matching the JSON SCHEMA below.\n"
-            "2. Do not wrap the response in markdown blocks like triple backticks JSON. Output pure JSON.\n"
-            "3. All values and conclusions must be written strictly in RUSSIAN.\n"
-            "4. Analyze communication style deeply: notice if speech is fact-driven, authoritative, structured, or fluid.\n\n"
+            "1. You must output ONLY a valid JSON object matching the exact JSON SCHEMA below.\n"
+            "2. Wrap your JSON response in a standard markdown block: ```json <your_json_object> ```. This is mandatory for Qwen.\n"
+            "3. All text values, summary points, and conclusions inside the JSON must be written strictly in RUSSIAN.\n"
+            "4. Avoid nested arrays; output a clean, flat list of strings for array keys.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
-            '  "key_observations": [\n'
-            '    "<описание_стиля_коммуникации_скорости_речи_и_поведения_на_основе_текста_интервью>",\n'
-            '    "<маркеры_фокусировки_на_фактах_структурированности_мышления_и_эмоционального_контроля>"\n'
-            '  ],\n'
-            '  "resume_manifestation": [\n'
-            '    "<анализ_особенностей_оформления_резюме_соблюдения_хронологии_и_распределения_акцентов>",\n'
-            '    "<оценка_прагматичности_текста_соотношение_описания_процессов_и_личных_достижений>"\n'
-            '  ],\n'
-            '  "conclusion": "<итоговый_емкий_психологический_вывод_о_базовом_психотипе_личностных_установках_и_стиле_мышления_кандидата>"\n'
+            '  "key_observations": [],\n'  # Полностью очистили от текста-подсказок, чтобы Qwen не зеркалил ТЗ
+            '  "resume_manifestation": [],\n'
+            '  "conclusion": ""\n'
             "}"
         )
 

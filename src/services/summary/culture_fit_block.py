@@ -11,32 +11,25 @@ class CultureFitBlockAnalyzer(BaseAnalyzer):
     def system_prompt(self) -> str:
         return (
             "You are an expert HR Corporate Culture Analyst and Values Matcher.\n"
-            "Your task is to analyze how well the candidate aligns with corporate values based on the provided resume and interview text.\n\n"
+            "Your task is to analyze how well the candidate aligns with corporate values based ONLY on the verified data inside the provided XML tags.\n\n"
             "CRITICAL INPUT LAWS:\n"
-            "1. Analyze ONLY the factual text provided in the user prompt. Do not assume, guess, or extrapolate facts.\n"
-            "2. If the text does not contain indicators for a specific key, return an empty array [] for that key. Do not invent details.\n"
-            "3. NEVER reuse phrases, placeholder words, or examples listed in this system prompt in your JSON output.\n\n"
+            "1. Extract real values and opinions strictly from <target_vacancy>, <candidate_resume>, and <candidate_cover_letter> tags. Do not assume or invent expectations.\n"
+            "2. If the text context does not provide sufficient data to analyze corporate values or candidate opinion, return empty arrays [] for those keys.\n"
+            "3. NEVER reuse, echo, or copy example values or instructional terms from this system prompt in your JSON output.\n"
+            "4. THIRD PERSON RULE: Write all text fields and strings exclusively in the third person (e.g., 'Кандидат разделяет', 'Взгляды сотрудника'). First person ('Я', 'Мой') is strictly forbidden.\n\n"
             "CRITICAL FORMATTING RULES:\n"
-            "1. You must output ONLY a raw, valid JSON object matching the JSON SCHEMA below.\n"
-            "2. Do not wrap the response in markdown blocks like triple backticks JSON. Output pure JSON.\n"
-            "3. All text values in arrays and strings must be written strictly in RUSSIAN.\n"
-            "4. The 'culture_fit_score' must be a dynamically calculated float between 0.0 and 1.0 based on real alignment.\n\n"
+            "1. You must output ONLY a valid JSON object matching the exact JSON SCHEMA below.\n"
+            "2. Wrap your JSON response in a standard markdown block: ```json <your_json_object> ```. This is mandatory for Qwen.\n"
+            "3. All text values, strings, and elements in arrays must be written strictly in RUSSIAN.\n"
+            "4. The 'culture_fit_score' must be a dynamically calculated float between 0.0 and 1.0 based strictly on objective alignment.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
             '  "culture_fit_score": 0.0,\n'
-            '  "company_values": [\n'
-            '    "<перечисление_ценностей_компании_выявленных_из_текста_вакансии>"\n'
-            '  ],\n'
-            '  "candidate_opinion": [\n'
-            '    "<выявленное_отношение_кандидата_к_рабочим_процессам_контролю_или_корпоративной_этике_на_основе_интервью>"\n'
-            '  ],\n'
-            '  "alignments": [\n'
-            '    "<конкретные_точки_соприкосновения_где_взгляды_кандидата_строго_совпадают_с_ценностями_компании>"\n'
-            '  ],\n'
-            '  "cultural_risks": [\n'
-            '    "<риски_несоответствия_стиля_управления_или_привычек_кандидата_текущей_культуре_и_гибкости_компании>"\n'
-            '  ],\n'
-            '  "conclusion": "<итоговый_емкий_вывод_о_культурной_совместимости_и_необходимости_поведенческой_адаптации>"\n'
+            '  "company_values": [],\n'  # Схема полностью пустая — Qwen заполнит её на основе ключей
+            '  "candidate_opinion": [],\n'
+            '  "alignments": [],\n'
+            '  "cultural_risks": [],\n'
+            '  "conclusion": ""\n'
             "}"
         )
 
@@ -46,7 +39,7 @@ class CultureFitBlockAnalyzer(BaseAnalyzer):
         """
         return {
             "culture_fit_score": float(raw_json.get("culture_fit_score", 0.0)),
-            "company_values": list(raw_json.get("company_values", ["командная работа", "порядочность", "честность", "дисциплина"])),
+            "company_values": list(raw_json.get("company_values", [])),  # Вычистили дефолтный хардкод
             "candidate_opinion": list(raw_json.get("candidate_opinion", [])),
             "alignments": list(raw_json.get("alignments", [])),
             "cultural_risks": list(raw_json.get("cultural_risks", [])),
