@@ -14,18 +14,16 @@ class SummaryOrchestrator:
     def __init__(self, ollama_client):
         self.ollama_client = ollama_client
         
-        # Регистрируем строго все 6 подблоков
         self.compliance_analyzer = ComplianceBlockAnalyzer()
         self.summary_block_analyzer = SummaryBlockAnalyzer()
         self.culture_fit_analyzer = CultureFitBlockAnalyzer()
         self.management_analyzer = ManagementStyleBlockAnalyzer()
         self.swot_analyzer = SwotBlockAnalyzer()
-        self.final_verdict_analyzer = FinalVerdictBlockAnalyzer() # Добавили инициализацию!
+        self.final_verdict_analyzer = FinalVerdictBlockAnalyzer() 
 
     async def generate_summary(self, vacancy: Any, resume: str, cover_letter: str, user_criteria: str) -> Dict[str, Any]:
         print("[Summary Orchestrator] Generating all 'General Summary' sub-blocks (6/6)...")
         
-        # Используем именованные параметры (keyword arguments), чтобы гарантировать точность передачи данных
         compliance_raw = await self.ollama_client.execute_block(
             vacancy=vacancy, resume=resume, cover_letter=cover_letter, user_criteria=user_criteria, analyzer=self.compliance_analyzer
         )

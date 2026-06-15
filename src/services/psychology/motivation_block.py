@@ -24,7 +24,7 @@ class MotivationBlockAnalyzer(BaseAnalyzer):
             "4. Avoid nested arrays; output a clean, flat list of strings for each array key.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
-            '  "interview_manifestation": [],\n'  # Схема полностью очищена — Qwen заполнит массивы сам
+            '  "interview_manifestation": [],\n' 
             '  "resume_manifestation": [],\n'
             '  "conclusion_points": []\n'
             "}"

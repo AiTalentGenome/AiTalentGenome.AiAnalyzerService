@@ -24,7 +24,7 @@ class PsychologicalProfileBlockAnalyzer(BaseAnalyzer):
             "4. Avoid nested arrays; output a clean, flat list of strings for array keys.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
-            '  "key_observations": [],\n'  # Полностью очистили от текста-подсказок, чтобы Qwen не зеркалил ТЗ
+            '  "key_observations": [],\n'  
             '  "resume_manifestation": [],\n'
             '  "conclusion": ""\n'
             "}"

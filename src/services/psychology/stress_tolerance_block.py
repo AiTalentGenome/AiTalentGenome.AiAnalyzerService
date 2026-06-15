@@ -24,7 +24,7 @@ class StressToleranceBlockAnalyzer(BaseAnalyzer):
             "4. Avoid nested arrays; output a clean, flat list of strings for each array key.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
-            '  "interview_manifestation": [],\n'  # Схема очищена — Qwen заполнит её на основе названий ключей
+            '  "interview_manifestation": [],\n' 
             '  "resume_manifestation": [],\n'
             '  "conclusion_points": []\n'
             "}"

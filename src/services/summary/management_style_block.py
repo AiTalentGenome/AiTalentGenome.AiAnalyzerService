@@ -24,7 +24,7 @@ class ManagementStyleBlockAnalyzer(BaseAnalyzer):
             "4. Be objective and direct. Highlight boundaries of their skills and constraints clearly based on the data.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
-            '  "management_style": [],\n'  # Полностью очистили структуру
+            '  "management_style": [],\n'
             '  "soft_skills": [],\n'
             '  "conclusion": ""\n'
             "}"

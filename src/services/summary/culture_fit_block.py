@@ -25,7 +25,7 @@ class CultureFitBlockAnalyzer(BaseAnalyzer):
             "JSON SCHEMA:\n"
             "{\n"
             '  "culture_fit_score": 0.0,\n'
-            '  "company_values": [],\n'  # Схема полностью пустая — Qwen заполнит её на основе ключей
+            '  "company_values": [],\n'  
             '  "candidate_opinion": [],\n'
             '  "alignments": [],\n'
             '  "cultural_risks": [],\n'

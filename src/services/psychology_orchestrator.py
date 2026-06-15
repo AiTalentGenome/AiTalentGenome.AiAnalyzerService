@@ -4,7 +4,7 @@ from services.psychology.motivation_block import MotivationBlockAnalyzer
 from services.psychology.stress_tolerance_block import StressToleranceBlockAnalyzer
 from services.psychology.leadership_block import LeadershipBlockAnalyzer
 from services.psychology.learning_agility_block import LearningAgilityBlockAnalyzer
-from services.psychology.psychological_verdict_block import PsychologicalVerdictBlockAnalyzer # Новый импорт
+from services.psychology.psychological_verdict_block import PsychologicalVerdictBlockAnalyzer 
 
 class PsychologyOrchestrator:
     """
@@ -14,48 +14,41 @@ class PsychologyOrchestrator:
     def __init__(self, ollama_client):
         self.ollama_client = ollama_client
         
-        # Регистрируем строго все 6 подблоков психологической вкладки
         self.profile_analyzer = PsychologicalProfileBlockAnalyzer()
         self.motivation_analyzer = MotivationBlockAnalyzer()
         self.stress_analyzer = StressToleranceBlockAnalyzer()
         self.leadership_analyzer = LeadershipBlockAnalyzer()
         self.learning_analyzer = LearningAgilityBlockAnalyzer()
-        self.verdict_analyzer = PsychologicalVerdictBlockAnalyzer() # Новая инициализация
+        self.verdict_analyzer = PsychologicalVerdictBlockAnalyzer() 
 
     async def generate_portrait(self, vacancy: Any, resume: str, cover_letter: str, user_criteria: str) -> Dict[str, Any]:
         print("[Psychology Orchestrator] Generating all 'Psychological Portrait' sub-blocks (6/6) with target temperature 0.25...")
 
-        # 1. Блок общего психологического профиля
         profile_raw = await self.ollama_client.execute_block(
             vacancy=vacancy, resume=resume, cover_letter=cover_letter, user_criteria=user_criteria, analyzer=self.profile_analyzer, temperature=0.25
         )
         profile_data = self.profile_analyzer.parse_response(profile_raw)
 
-        # 2. Блок оценки мотивации и профессиональной самооценки
         motivation_raw = await self.ollama_client.execute_block(
             vacancy=vacancy, resume=resume, cover_letter=cover_letter, user_criteria=user_criteria, analyzer=self.motivation_analyzer, temperature=0.25
         )
         motivation_data = self.motivation_analyzer.parse_response(motivation_raw)
 
-        # 3. Блок уровня стрессоустойчивости и принятия решений
         stress_raw = await self.ollama_client.execute_block(
             vacancy=vacancy, resume=resume, cover_letter=cover_letter, user_criteria=user_criteria, analyzer=self.stress_analyzer, temperature=0.25
         )
         stress_data = self.stress_analyzer.parse_response(stress_raw)
 
-        # 4. Блок уровня лидерства и командной работы
         leadership_raw = await self.ollama_client.execute_block(
             vacancy=vacancy, resume=resume, cover_letter=cover_letter, user_criteria=user_criteria, analyzer=self.leadership_analyzer, temperature=0.25
         )
         leadership_data = self.leadership_analyzer.parse_response(leadership_raw)
 
-        # 5. Блок склонности к обучению и развитию
         learning_raw = await self.ollama_client.execute_block(
             vacancy=vacancy, resume=resume, cover_letter=cover_letter, user_criteria=user_criteria, analyzer=self.learning_analyzer, temperature=0.25
         )
         learning_data = self.learning_analyzer.parse_response(learning_raw)
 
-        # 6. Финальный вердикт по психологической оценке
         verdict_raw = await self.ollama_client.execute_block(
             vacancy=vacancy, resume=resume, cover_letter=cover_letter, user_criteria=user_criteria, analyzer=self.verdict_analyzer, temperature=0.25
         )

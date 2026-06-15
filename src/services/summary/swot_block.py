@@ -24,7 +24,7 @@ class SwotBlockAnalyzer(BaseAnalyzer):
             "4. Avoid nested arrays; output a clean, flat list of strings for each array key.\n\n"
             "JSON SCHEMA:\n"
             "{\n"
-            '  "strengths": [],\n'  # Схема полностью пустая — Qwen заполнит её на основе ключей
+            '  "strengths": [],\n'
             '  "weaknesses": [],\n'
             '  "opportunities": [],\n'
             '  "threats": []\n'

@@ -33,7 +33,6 @@ class MainAnalysisOrchestrator:
         resume_clean = resume.strip() if resume else "Информация о резюме отсутствует."
         cover_clean = cover_letter.strip() if cover_letter else "Сопроводительное письмо отсутствует."
 
-        # Диагностический лог (добавили вывод текущей температуры)
         print("\n" + "="*80)
         print(f"[DATA CHECK] Incoming data for analyzer: '{analyzer.__class__.__name__}' (Temp: {temperature})")
         print(f" -> Vacancy Title: {vacancy.title}")
@@ -62,14 +61,13 @@ class MainAnalysisOrchestrator:
         try:
             print(f"[Ollama] Sending context ({len(user_content)} chars) with Temp {temperature} to '{analyzer.__class__.__name__}'...")
 
-            # Передаем температуру в поток выполнения
             response = await asyncio.to_thread(
                 self._call_ollama,
                 self.ollama_client,
                 self.model_name,
                 analyzer.system_prompt,
                 user_content,
-                temperature # Передаем сюда
+                temperature 
             )
 
             raw_text = response.get("response", "{}").strip()
@@ -94,7 +92,6 @@ class MainAnalysisOrchestrator:
         summary_data = await self.summary_orch.generate_summary(vacancy, resume, cover_letter, user_criteria)
         psychology_data = await self.psychology_orch.generate_portrait(vacancy, resume, cover_letter, user_criteria)
 
-        # Извлекаем оценки безопасности и технического мэтча
         compliance = summary_data.get("compliance_analysis", {})
         tech_score = compliance.get("ai_score", 0.0)
 
